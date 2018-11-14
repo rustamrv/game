@@ -1,5 +1,4 @@
-import pygame as p
-from LogicalRectShape import *
+import pygame as p 
 from Player import *
 from CircleShape import *
 from Menu import *
