@@ -1,13 +1,19 @@
 import pyodbc as sq
 
+
 class Sql:
 
-    def __init__(self, connect, log):
+    def __init__(self, connect,  name, log):
         self.connect = connect
+        self.name = name
         self.log = log
 
-    def SearchGame(self, name, player, Enemy):
-
+    def SearchGame(self, player, enemy):
+        """
+        Search game
+        :param player: Player
+        :param enemy: Enemy
+        """
         try:
             con = sq.connect(self.connect)
             self.log.debug("Connection successful ")
@@ -15,20 +21,19 @@ class Sql:
             self.log.debug(e)
             return False
         cursor = con.cursor()
-        cursor.execute("select * from DB.dbo.SaveGame where userName = '" + name + "'")
+        cursor.execute("select * from DB.dbo.SaveGame where userName = '" + self.name + "'")
         rows = cursor.fetchall()
         if len(rows) > 0:
             player.setHealth(int(rows[0][2]))
-            Enemy.setHealth(int(rows[0][1]))
-        cursor.execute("select * from DB.dbo.settings where userName = '" + name + "'")
+            enemy.setHealth(int(rows[0][1]))
+        cursor.execute("select * from DB.dbo.settings where userName = '" + self.name + "'")
         rows = cursor.fetchall()
         if len(rows) > 0:
             player.setColor(int(rows[0][2]))
-            Enemy.setColor(int(rows[0][1]))
+            enemy.setColor(int(rows[0][1]))
         con.commit()
-        return True
 
-    def SearchName(self, name, player, Enemy, basic):
+    def SearchName(self, player, enemy, basic):
         try:
             con = sq.connect(self.connect)
             self.log.debug("Connection successful ")
@@ -37,20 +42,28 @@ class Sql:
             return False
         cursor = con.cursor()
 
-        cursor.execute("select * from DB.dbo.users where name = '" + name + "'")
+        cursor.execute("select * from DB.dbo.users where name = '" + self.name + "'")
         count = 0
         rows = cursor.fetchall()
         if len(rows) == 1:
             count = 1
-            self.SaveGame(name, player, Enemy, basic)
+            self.SaveGame(player, enemy, basic)
         if count == 0:
-            cursor.execute("insert into DB.dbo.users(name) VALUES ('" + name + "')")
-            self.log.debug("Insert users name =" + format(name))
+            cursor.execute("insert into DB.dbo.users(name) VALUES ('" + self.name + "')")
+            # self.log.debug("Insert users name =" + format(name))
+            self.SaveGame(player, enemy, basic)
+            self.log.debug("Insert users name =" + format(self.name))
         con.commit()
         return True
 
+    def SetName(self, name):
+        self.name = name
 
-    def SaveGame(self, name, player, Enemy, basic):
+    def getName(self):
+        return self.name
+
+
+    def SaveGame(self, player, enemy, basic):
         try:
             con = sq.connect(self.connect)
             self.log.debug("Connection successful ")
@@ -58,26 +71,26 @@ class Sql:
             self.log.debug(e)
             return False
         cursor = con.cursor()
-        cursor.execute("select * from DB.dbo.SaveGame where userName = '" + name + "'")
+        cursor.execute("select * from DB.dbo.SaveGame where userName = '" + self.name + "'")
         rows = cursor.fetchall()
         if len(rows) == 1:
             cursor.execute(
-                "update DB.dbo.SaveGame set HealthEnemy = '" + format(Enemy.getHealth()) + "', HealthMan = '" + format(
-                    player.getHealth()) + "' where userName = '" + name + "'")
-            self.log.debug("Update SaveGame name =" + format(name))
+                "update DB.dbo.SaveGame set HealthEnemy = '" + format(enemy.getHealth()) + "', HealthMan = '" + format(
+                    player.getHealth()) + "' where userName = '" + self.name + "'")
+            self.log.debug("Update SaveGame name =" + format(self.name))
         if len(rows) == 0:
             cursor.execute("insert into DB.dbo.SaveGame(HealthEnemy, HealthMan, userName) VALUES ('" + format(
-                Enemy.getHealth()) + "','" + format(player.getHealth()) + "','" + name + "')")
-            self.log.debug("Insert SaveGame name =" + format(name))
-        cursor.execute("select * from DB.dbo.settings where userName = '" + name + "'")
+                enemy.getHealth()) + "','" + format(player.getHealth()) + "','" + self.name + "')")
+            self.log.debug("Insert SaveGame name =" + format(self.name))
+        cursor.execute("select * from DB.dbo.settings where userName = '" + self.name + "'")
         rows = cursor.fetchall()
         if len(rows) == 1:
             cursor.execute(
-                "update DB.dbo.settings set ColorMen = '" + format(Enemy.getColor()) + "', Background = '" + format(
-                    basic.getColor()) + "' where userName = '" + name + "'")
-            self.log.debug("Update settings name =" + format(name))
+                "update DB.dbo.settings set ColorMen = '" + format(enemy.getColor()) + "', Background = '" + format(
+                    basic.getColor()) + "' where userName = '" + self.name + "'")
+            self.log.debug("Update settings name =" + format(self.name))
         if len(rows) == 0:
             cursor.execute("insert into DB.dbo.settings(ColorMen, Background, userName) VALUES ('" + format(
-                Enemy.getColor()) + "','" + format(basic.getColor()) + "','" + name + "')")
-            self.log.debug("Insert settings name =" + format(name))
+                enemy.getColor()) + "','" + format(basic.getColor()) + "','" + self.name + "')")
+            self.log.debug("Insert settings name =" + format(self.name))
         con.commit()
