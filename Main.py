@@ -29,14 +29,15 @@ basic = LogicalRect(5, 595, 790, -60, (255, 255, 255))
 start = False
 
 Play = Player(5, 525, 20, -10, (0, 128, 0), None)
-print(Play.__doc__)
 
 logger.debug("Create player")
 Enemy = Player(5, 50, 20, -10, (0, 128, 0), 1)
 logger.debug("Create enemy")
 
-BalletPlayer = Ballet(Play.getShape().getX(), Play.getShape().getY(), Play.getShape().getHeight(), Play.getShape().getWidth(), 5, (255, 255, 255))
-BalletEnemy = Ballet(Enemy.getShape().getX(), Enemy.getShape().getY(), Enemy.getShape().getHeight(), Enemy.getShape().getWidth(), 5, (255, 255, 255))
+BalletPlayer = Ballet(Play.getShape().getX(), Play.getShape().getY(), Play.getShape().getHeight(),
+                      Play.getShape().getWidth(), 5, (255, 255, 255))
+BalletEnemy = Ballet(Enemy.getShape().getX(), Enemy.getShape().getY(), Enemy.getShape().getHeight(),
+                     Enemy.getShape().getWidth(), 5, (255, 255, 255))
 
 File = WorkFile("Menu.json")
 startMenu = File.read()
@@ -44,13 +45,38 @@ File1 = WorkFile("settings.json")
 setMenu = File1.read()
 
 database = 'DRIVER={SQL Server};SERVER=LAPTOP-JGQ8MSK8;DATABASE=DB;UID=Admin;PWD=qwerty12345'
-Connect = Sql(database, logger)
+Connect = Sql(database, "user", logger)
 
 stMenu = Menu(startMenu)
 
 stMenu.menu(window)
-name = "user"
 start = stMenu.position(Connect, window, Play, Enemy, basic, setMenu)
+
+# if stMenu.point == 0:
+#
+#     start = Connect.SearchName(name, Play, Enemy, basic)
+# elif stMenu.point == 1:
+#     name = stMenu.ask(window, "What is your name?")
+#     start = Connect.SearchName(name, Play, Enemy, basic)
+# elif stMenu.point == 2:
+#     name = stMenu.ask(window, "What is your name?")
+#     Connect.SaveGame(name, Play, Enemy, basic)
+# elif stMenu.point == 3:
+#     Set = Menu(setMenu)
+#     Set.Setting(window, Play, Enemy, basic)
+#     if Set.point == 3:
+#         stMenu = Menu(startMenu)
+#
+#         stMenu.menu(window)
+#         if stMenu.point == 0:
+#             start = Connect.SearchName(name, Play, Enemy, basic)
+#         elif stMenu.point == 1:
+#             name = stMenu.ask(window, "What is your name?")
+#             Connect.SearchName(name, Play, Enemy)
+#             start = Connect.SearchGame(name, Play, Enemy, basic)
+#
+#         elif stMenu.point == 2:
+#             Connect.SaveGame(name, Play, Enemy, basic)
 
 if __name__ == "__main__":
     logger.debug("Start")
@@ -110,7 +136,8 @@ if __name__ == "__main__":
         rect = pygame.Rect([5, 5, 220, 25])
         if not Play.isDead() and not Enemy.isDead():
             window.blit(font.render(
-                "Hello, " + name + "! Health enemy : " + format(Enemy.getHealth()) + " health " + name + ": " + format(
+                "Hello, " + Connect.getName() + "! Health enemy : " + format(Enemy.getHealth()) + " health " +
+                Connect.getName() + ": " + format(
                     Play.getHealth()), 1, (255, 255, 224)), rect.topleft)
         elif Enemy.isDead():
             window.blit(font.render("WIN!", 1, (255, 255, 244)), rect.topleft)
