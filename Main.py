@@ -52,32 +52,6 @@ stMenu.menu(window)
 name = "user"
 start = stMenu.position(Connect, window, Play, Enemy, basic, setMenu)
 
-# if stMenu.point == 0:
-#
-#     start = Connect.SearchName(name, Play, Enemy, basic)
-# elif stMenu.point == 1:
-#     name = stMenu.ask(window, "What is your name?")
-#     start = Connect.SearchName(name, Play, Enemy, basic)
-# elif stMenu.point == 2:
-#     name = stMenu.ask(window, "What is your name?")
-#     Connect.SaveGame(name, Play, Enemy, basic)
-# elif stMenu.point == 3:
-#     Set = Menu(setMenu)
-#     Set.Setting(window, Play, Enemy, basic)
-#     if Set.point == 3:
-#         stMenu = Menu(startMenu)
-#
-#         stMenu.menu(window)
-#         if stMenu.point == 0:
-#             start = Connect.SearchName(name, Play, Enemy, basic)
-#         elif stMenu.point == 1:
-#             name = stMenu.ask(window, "What is your name?")
-#             Connect.SearchName(name, Play, Enemy)
-#             start = Connect.SearchGame(name, Play, Enemy, basic)
-#
-#         elif stMenu.point == 2:
-#             Connect.SaveGame(name, Play, Enemy, basic)
-
 if __name__ == "__main__":
     logger.debug("Start")
     while start:
