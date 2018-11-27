@@ -15,8 +15,6 @@ class LogicalPoint:
     def setX(self, x):
         self.__x = x
 
-
-
     def shiftOXRight(self, shift):
         self.__x += shift
 
