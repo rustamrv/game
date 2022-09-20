@@ -20,6 +20,6 @@ Then install the dependencies:
 
 ```sh
 (env)$ pip3 install -r requirements.txt  
-(env)$ python3 src/app.py 
+(env)$ python3 cmain/app.py 
 ```
  
